@@ -11,6 +11,7 @@ abstract class CommandController
 {
     protected $app;
 
+    //functions that call this model needs to have run
     abstract public function run($argv);
 
     public function __construct(App $app)

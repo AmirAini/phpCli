@@ -23,7 +23,7 @@ class App
         return $this->printer;
     }
 
-    //register controller
+    //register the command and assign to what controller
     public function registerController($name, CommandController $controller)
     {
         $this->commandRegistry->registerController($name, $controller);

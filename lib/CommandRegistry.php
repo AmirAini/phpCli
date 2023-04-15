@@ -14,18 +14,17 @@ class CommandRegistry
 
     public function registerController($commandName, CommandController $controller)
     {
-        $this->controllers = [ $commandName => $controller ];
+        $this->controllers = [$commandName => $controller];
+    }
+
+    public function getController($commandName)
+    {
+        return $this->controllers[$commandName] ?? null;
     }
 
     public function registerCommand($name, $callable)
     {
         $this->registry[$name] = $callable;
-    }
-
-    public function getController($commandName)
-    {
-
-        return $this->controllers[$commandName] ?? null;
     }
 
     public function getCommand($cmdName)
