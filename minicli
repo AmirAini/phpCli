@@ -1,0 +1,22 @@
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Minicli\App;
+
+//this call the 
+$app = new App();
+
+//registersCmds
+$app->registryCmd('hello', function (array $argv) use ($app) {
+    //test hello cmd with your name
+    $name = isset($argv[2]) ? $argv[2] : "your name";
+    $app->getPrinter()->displayMsg("hi $name");
+});
+
+$app->registryCmd('help', function (array $argv) use ($app) {
+    $app->getPrinter()->displayMsg("usage: put [your name]");
+});
+
+
+
+$app->runCommand($argv);
