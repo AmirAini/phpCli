@@ -11,6 +11,10 @@ class ComposerStaticInit8cfb6f350cb8115a1caae7ebce4179d5
         array (
             'Minicli\\' => 8,
         ),
+        'D' => 
+        array (
+            'Database\\' => 9,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -21,6 +25,10 @@ class ComposerStaticInit8cfb6f350cb8115a1caae7ebce4179d5
         'Minicli\\' => 
         array (
             0 => __DIR__ . '/../..' . '/lib',
+        ),
+        'Database\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/database',
         ),
         'App\\' => 
         array (

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Any class that inherits from CommandController will inherit the getApp method,
- * But required to implement a run method and handle the command execution.
+ * Inheritable by other classes,
+ * But required to implement a run method and handle the command execution as its abstract.
  */
 
 namespace Minicli;

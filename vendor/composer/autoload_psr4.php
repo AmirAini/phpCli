@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Minicli\\' => array($baseDir . '/lib'),
+    'Database\\' => array($baseDir . '/database'),
     'App\\' => array($baseDir . '/app'),
 );
