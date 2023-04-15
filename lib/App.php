@@ -7,12 +7,13 @@ class App
 {
     //to use the CliPrinter class
     protected $printer;
-    protected $registry = [];
+    protected $registrationCmd;
 
     public function __construct()
     {
         //assignment to new instance
         $this->printer = new CliPrinter();
+        $this->registrationCmd = new CommandRegistration();
     }
 
     //final output msg
@@ -22,17 +23,11 @@ class App
         return $this->printer;
     }
 
-    public function registryCmd($cmdName, $callable)
+    //main passes to here then to another class
+    public function registryCmd($cmd, $callable)
     {
-        $this->registry[$cmdName] = $callable;
+        $this->registrationCmd->registryCmd($cmd, $callable);
     }
-
-    public function getCmd($cmdName)
-    {
-        //check if that cmd name is valid
-        return $this->registry[$cmdName] ?? null;
-    }
-
 
     //function from main page
     public function runCommand(array $argv)
@@ -43,9 +38,8 @@ class App
             $cmdName = "help";
         }
 
-
         //call method
-        $cmd = $this->getCmd($cmdName);
+        $cmd = $this->registrationCmd->getCmd($cmdName);
 
         if ($cmd === null) {
             //return the msg
