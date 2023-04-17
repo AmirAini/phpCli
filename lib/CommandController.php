@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Inheritable by other classes,
- * But required to implement a run method and handle the command execution as its abstract.
- */
-
 namespace Minicli;
 
 abstract class CommandController
