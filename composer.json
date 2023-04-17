@@ -3,7 +3,10 @@
       "psr-4": {
         "Minicli\\": "lib/",
         "App\\": "app/",
-        "Database\\":"database"
+        "Database\\":"database/"
       }
-    }
+    },
+    "require": {
+      "vlucas/phpdotenv": "^5.5"
+  }
 }

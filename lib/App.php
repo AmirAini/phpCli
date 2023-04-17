@@ -2,6 +2,8 @@
 
 namespace Minicli;
 
+use Database\movieSeeder;
+
 /**
  * The main application class for the Minicli framework.
  */
