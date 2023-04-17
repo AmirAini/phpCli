@@ -3,50 +3,78 @@
 namespace Minicli;
 
 /**
- * With CommandController we've implemented a method named getCallable.
- * Responsible for figuring out which code should be called when a command is invoked. 
+ * Outsource  
  */
 
 class CommandRegistry
 {
-    protected $registry = [];
-    protected $controllers = [];
+    protected $commandPath;
+    protected $namespaces = [];
+    protected $defaultRegistry = [];
 
-    public function registerController($commandName, CommandController $controller)
+    public function __construct($commandPath)
     {
-        $this->controllers = [$commandName => $controller];
+        $this->commandPath = $commandPath;
+
+        //method is called after object instantiated
+        $this->autoloadNamespaces();
     }
 
-    public function getController($commandName)
+    public function autoloadNamespaces()
     {
-        return $this->controllers[$commandName] ?? null;
+        // /loop to automatically register all subdirectories in the commands directory as PHP namespaces
+        foreach (glob($this->getCommandsPath() . '/*', GLOB_ONLYDIR) as $namespace_path) {
+            $this->registerNamespace(basename($namespace_path));
+        }
+    }
+
+    public function registerNamespace($commandNamespace)
+    {
+        //create new instance
+        $namespace = new CommandNamespace($commandNamespace);
+        $namespace->loadControllers($this->getCommandsPath());
+        $this->namespaces[strtolower($commandNamespace)] = $namespace;
+    }
+
+    public function getNamespace($command)
+    {
+        return isset($this->namespaces[$command]) ? $this->namespaces[$command] : null;
+    }
+
+    public function getCommandsPath()
+    {
+        return $this->commandPath;
     }
 
     public function registerCommand($name, $callable)
     {
-        $this->registry[$name] = $callable;
+        $this->defaultRegistry[$name] = $callable;
     }
 
     public function getCommand($cmdName)
     {
         //check if that cmd name is valid
-        return $this->registry[$cmdName] ?? null;
+        return $this->defaultRegistry[$cmdName] ?? null;
     }
 
-    public function getCallable($commandName)
+    public function getCallableController($command, $subcommand = null)
     {
-        $controller = $this->getController($commandName);
+        $namespace = $this->getNamespace($command);
 
-        if ($controller instanceof CommandController) {
-            return [$controller, 'run'];
+        if ($namespace !== null) {
+            return $namespace->getController($subcommand);
         }
 
-        $command = $this->getCommand($commandName);
+        return null;
+    }
 
-        if ($command === null) {
-            throw new \Exception("Command '$commandName' not found.");
+    public function getCallable($command)
+    {
+        $single_command = $this->getCommand($command);
+        if ($single_command === null) {
+            throw new \Exception(sprintf("Command \"%s\" not found.", $command));
         }
 
-        return $command;
+        return $single_command;
     }
 }

@@ -2,18 +2,14 @@
 require __DIR__ . '/vendor/autoload.php';
 
 use Minicli\App;
-use App\Command\HelloController;
+use Minicli\CommandCall;
 
-//this call the 
 $app = new App();
+$app->setSignature("minicli hello name [ user=name ]");
 
-//registersController
-$app->registerController('hello', new HelloController($app));
-
-//registerCmd
-$app->registerCommand('help', function (array $argv) use ($app) {
-    $app->getPrinter()->displayMsg("usage: put [your name]");
+$app->registerCommand("help", function (CommandCall $call) use ($app) {
+    $app->printSignature();
+    print_r($call->params);
 });
-
 
 $app->runCommand($argv);

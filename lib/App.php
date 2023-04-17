@@ -1,60 +1,76 @@
 <?php
 
-// This file is incharge of handling cmds
 namespace Minicli;
 
 class App
 {
-    //to use the CliPrinter class
     protected $printer;
-    protected $commandRegistry;
+
+    protected $command_registry;
+
+    protected $app_signature;
 
     public function __construct()
     {
-        //assignment to new instance
         $this->printer = new CliPrinter();
-        $this->commandRegistry = new CommandRegistry();
+        $this->command_registry = new CommandRegistry(__DIR__ . '/../app/Command');
     }
 
-    //final output msg
     public function getPrinter()
     {
-        //pass arg to printer class
         return $this->printer;
     }
 
-    //register the command and assign to what controller
-    public function registerController($name, CommandController $controller)
+    public function getSignature()
     {
-        $this->commandRegistry->registerController($name, $controller);
+        return $this->app_signature;
     }
 
-    //main passes to here then to another class
-    public function registerCommand($cmd, $callable)
+    public function printSignature()
     {
-        $this->commandRegistry->registerCommand($cmd, $callable);
+        $this->getPrinter()->displayMsg(sprintf("usage: %s", $this->getSignature()));
     }
 
-    //function from main page
-    public function runCommand(array $argv, $cmdName = 'help')
+    public function setSignature($app_signature)
     {
-        if (isset($argv[1])) {
-            $cmdName = $argv[1];
-        }
+        $this->app_signature = $app_signature;
+    }
 
-        if ($cmdName === null) {
-            //return the msg
-            $this->getPrinter()->displayMsg("ERROR: Command '$cmdName' not found.");
+
+    public function registerCommand($name, $callable)
+    {
+        $this->command_registry->registerCommand($name, $callable);
+    }
+
+    public function runCommand(array $argv = [])
+    {
+        $input = new CommandCall($argv);
+
+        if (count($input->args) < 2) {
+            $this->printSignature();
             exit;
         }
 
-        //success
-        try {
-            call_user_func($this->commandRegistry->getCallable($cmdName), $argv);
+        $controller = $this->command_registry->getCallableController($input->command, $input->subcommand);
+
+        if ($controller instanceof CommandController) {
+            $controller->boot($this);
+            $controller->run($input);
+            $controller->teardown();
+            exit;
         }
-        //fail
-        catch (\Exception $e) {
+
+        $this->runSingle($input);
+    }
+
+    protected function runSingle(CommandCall $input)
+    {
+        try {
+            $callable = $this->command_registry->getCallable($input->command);
+            call_user_func($callable, $input);
+        } catch (\Exception $e) {
             $this->getPrinter()->displayMsg("ERROR: " . $e->getMessage());
+            $this->printSignature();
             exit;
         }
     }
