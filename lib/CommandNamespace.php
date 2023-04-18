@@ -93,6 +93,7 @@ class CommandNamespace
         $controller_class = str_replace('.php', '', $filename);
         $command_name = strtolower(str_replace('Controller', '', $controller_class));
         $full_class_name = sprintf("App\\Command\\%s\\%s", $this->getName(), $controller_class);
+        echo($full_class_name);
 
         /** @var CommandController $controller */
         $controller = new $full_class_name();

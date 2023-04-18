@@ -36,4 +36,13 @@ class CliPrinter
         $this->out("$msg");
         $this->newLine();
     }
+
+    public function displayRecords($result)
+    {
+        while ($row = $result->fetch_assoc()) {
+            $this->newLine();
+            echo "Movie: " . $row["Title"] . ", Genre: " . $row["Genre"] . ", Released: " . $row["Year"] . ", Rating: " . $row["Rating"] . "/10";
+            $this->newLine();
+        }
+    }
 }
