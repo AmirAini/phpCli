@@ -43,6 +43,8 @@ class CliPrinter
             $this->newLine();
             echo "Movie: " . $row["Title"] . ", Genre: " . $row["Genre"] . ", Released: " . $row["Year"] . ", Rating: " . $row["Rating"] . "/10";
             $this->newLine();
+            echo "Decription: " . $row["Description"];
+            $this->newLine();
         }
     }
 }
